@@ -1,9 +1,5 @@
-provider "aws" {
-  region = var.region
-}
-
 //VPC
-resource "aws_vpc" "vpc" {
+/*resource "aws_vpc" "vpc" {
   cidr_block       = var.vpc_cidr_block
   instance_tenancy = var.instance_tenancy
 
@@ -54,10 +50,10 @@ resource "aws_default_security_group" "default_security_group" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
+}*/
 
 //Lambda
-data "archive_file" "zip" {
+/*data "archive_file" "zip" {
   type        = "zip"
   source_file = var.source_file
   output_path = var.output_path
@@ -95,7 +91,7 @@ resource "aws_lambda_function" "lambda" {
 resource "aws_iam_role_policy_attachment" "policy_attachment" {
   role       = aws_iam_role.iam_for_lambda.id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
+}*/
 //API Gateway
 resource "aws_apigatewayv2_api" "lambda" {
   name          = "lambdaAPI"
@@ -110,7 +106,7 @@ resource "aws_apigatewayv2_stage" "lambda" {
 
 resource "aws_apigatewayv2_integration" "lambdaCode" {
   api_id             = aws_apigatewayv2_api.lambda.id
-  integration_uri    =  aws_lambda_function.lambda.invoke_arn
+  integration_uri    = var.lambda_function.invoke_arn// var.lambda_function.invoke_arn
   integration_type   = var.integration_type
   integration_method = var.integration_method
 }
@@ -124,7 +120,7 @@ resource "aws_apigatewayv2_route" "lambdaCode" {
 resource "aws_lambda_permission" "api_gw" {
   statement_id  = var.statement_id
   action        = var.action
-  function_name = aws_lambda_function.lambda.function_name
+  function_name = var.lambda_function.function_name// var.lambda_function.function_name
   principal     = var.principal
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
