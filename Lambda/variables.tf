@@ -1,6 +1,6 @@
-variable "source_file" {}
+variable "s3_backet" {}
 
-variable "output_path" {}
+variable "s3_key" {}
 
 variable "handler" {}
 

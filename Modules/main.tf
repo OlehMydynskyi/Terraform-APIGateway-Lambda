@@ -1,8 +1,8 @@
 module "lambda" {
   source                    = "../Lambda"
   
-  source_file               = "./lambdaCode.py"
-  output_path               = "./lambdaCode.zip"
+  s3_backet                 = "lambda-code-for-terraform"
+  s3_key                    = "Test-code/lambdaCode.zip"
   handler                   = "lambdaCode.lambda_handler" 
   runtime                   = "python3.8" 
   public_subnet_id          = module.networking.public_subnet_id

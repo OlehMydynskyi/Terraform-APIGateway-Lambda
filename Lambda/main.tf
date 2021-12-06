@@ -1,7 +1,6 @@
-data "archive_file" "zip" {
-  type        = "zip"
-  source_file = var.source_file
-  output_path = var.output_path
+data "aws_s3_bucket_object" "lambda_file" {
+  bucket = var.s3_backet
+  key    = var.s3_key
 }
 
 data "aws_iam_policy_document" "policy" {
@@ -21,11 +20,13 @@ resource "aws_iam_role" "iam_for_lambda" {
 }
 
 resource "aws_lambda_function" "lambda" {
-  function_name = "lambdaCode"
-  filename      = "${data.archive_file.zip.output_path}"
-  role          = "${aws_iam_role.iam_for_lambda.arn}"
-  handler       = var.handler
-  runtime       = var.runtime
+  function_name     = "lambdaCode"
+  s3_bucket         = data.aws_s3_bucket_object.lambda_file.bucket
+  s3_key            = data.aws_s3_bucket_object.lambda_file.key
+  s3_object_version = data.aws_s3_bucket_object.lambda_file.version_id
+  role              = "${aws_iam_role.iam_for_lambda.arn}"
+  handler           = var.handler
+  runtime           = var.runtime
 
   vpc_config {
     subnet_ids         = [var.public_subnet_id]
